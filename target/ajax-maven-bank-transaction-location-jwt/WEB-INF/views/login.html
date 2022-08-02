@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600">
+<!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css">
+    <link rel="stylesheet" href="/assets/css/iziToast-1.4.0.min.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="stylesheet" href="/assets/css/sweetalert2.min.css">
+</head>
+<body>
+<div class="form">
+
+    <ul class="tab-group">
+        <li class="tab active"><a href="#signup">Sign Up</a></li>
+        <li class="tab"><a href="#login">Log In</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="signup">
+            <form action="/" method="post">
+
+                <div class="field-wrap">
+                    <select name="role" id="role" class="form-select">
+                        <option value="1">ADMIN</option>
+                        <option value="2">USER</option>
+                    </select>
+                </div>
+                <div class="top-row">
+                    <div class="field-wrap">
+                        <label>
+                            First Name<span class="req">*</span>
+                        </label>
+                        <input type="text" id="firstName" required autocomplete="off" />
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            Last Name<span class="req">*</span>
+                        </label>
+                        <input type="text" id="lastName"  required autocomplete="off"/>
+                    </div>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Email Address<span class="req">*</span>
+                    </label>
+                    <input type="email" id="usernameReg" name="usernameReg" autocomplete="off"/>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Set A Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="passwordReg" name="passwordReg" autocomplete="off"/>
+                </div>
+                <div class="field-wrap">
+                    <label>
+                        Conrfirm Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="rePasswordReg" name="rePasswordReg" autocomplete="off"/>
+                </div>
+
+                <button type="button" id="btnSignUp" class="button button-block"/>Get Started</button>
+
+            </form>
+
+        </div>
+
+        <div id="login">
+            <h1>Welcome Back!</h1>
+
+            <form action="/" method="post">
+
+                <div class="field-wrap">
+                    <label>
+                        Email Address<span class="req">*</span>
+                    </label>
+                    <input id="username" name="username" type="email"required autocomplete="off"/>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="password" name="password" autocomplete="off"/>
+                </div>
+
+                <p class="forgot"><a href="#">Forgot Password?</a></p>
+
+                <button type="button" id="btnLogin" class="button button-block"/>Log In</button>
+
+            </form>
+
+        </div>
+
+    </div><!-- tab-content -->
+    </div> <!-- /form -->
+<script src="/assets/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/js/iziToast-1.4.0.js"></script>
+<script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
+<script src="/assets/js/appp.js"></script>
+<script src="/assets/js/sweetalert2.min.js"></script>
+<script type="text/javascript" src="/assets/js/login.js"></script>
+<script type="text/javascript" src="/assets/js/web/login.js"></script>
+
+<script>
+
+</script>
+
+
+</body>
+</html>
+

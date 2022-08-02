@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Upvex - Responsive Admin Dashboard Template</title>
+    <th:block th:replace="/layout/header::header"/>
+
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+
+    <!-- Topbar Start -->
+    <th:block th:replace="/layout/navbar::navbar"/>
+    <!-- end Topbar -->
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <th:block th:replace="/layout/left-size-menu::left-size-menu"/>
+
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Upvex</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8 float-lg-left">
+                        Danh sach nguoi dung
+                    </div>
+                    <div class="col-4 float-lg-right">
+                        <button id="btn-created" class="btn btn-primary btn-created">Create</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table class=" table table-hover" id="tableListUser">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>first name</th>
+                                <th>last name</th>
+                                <th>username</th>
+                                <th>ROLE</th>
+                                <th>ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <!-- end row -->
+
+                <!-- end row -->
+
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        2019 &copy; Upvex theme by <a href="">Coderthemes</a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-md-right footer-links d-none d-sm-block">
+                            <a href="javascript:void(0);">About Us</a>
+                            <a href="javascript:void(0);">Help</a>
+                            <a href="javascript:void(0);">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end Footer -->
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+
+
+</div>
+<!-- END wrapper -->
+
+<!-- Right Sidebar -->
+<th:block th:replace="/layout/right-bar::right-bar"/>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+<th:block th:replace="/layout/script/script::temp_script"/>
+<th:block th:replace="/user/modal-create-user::modal-create-user"/>
+<th:block th:replace="/user/modal-update-user::modal-update-user"/>
+
+<script>
+
+    let user = new User();
+
+    let role = new Role();
+
+    function loadAllUser() {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/users"
+        }).done((data) => {
+            $.each(data, (i, item) => {
+                user = item
+                let str = `
+                 <tr id="tr_${user.id}">
+                    <td></td>
+                    <td>${user.id}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.username}</td>
+                    <td>${user.role.code}</td>
+                    <td>
+                    <button data-id="${user.id}" id="btn-update" class="btn btn-primary btn-update">Updae</button>
+                     </td>
+                </tr>
+    `
+
+                $("#tableListUser tbody").append(str)
+                handleShowModalCreate()
+                handleShowModalUpdate()
+            })
+
+        }).fail(() => {
+
+        })
+    }
+
+    function getUserById(userId) {
+        return $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/users/user/" + userId,
+        }).done((data) => {
+            user = data;
+        }).fail(() => {
+            App.IziToast.showErrorAlert("Fail user")
+        })
+    }
+
+    function handleShowModalCreate() {
+        $(".btn-created").on("click", () => {
+            $("#modalCreateUser").modal("show");
+        })
+    }
+
+    function handleShowModalUpdate() {
+        $(".btn-update").on("click", function () {
+            let id = $(this).data("id")
+            getUserById(id).then(() => {
+                $("#modalUpdateUser").modal("show");
+                $("#firstnameUp").val(user.firstName);
+                $("#lastnameUp").val(user.lastName);
+                $("#EmailUp").val(user.username)
+                $("#idUserUp").val(user.id);
+            })
+        })
+    }
+
+    $(".btnCreate").on("click", () => {
+        role.id = $("#roleCre").val();
+        role.code = $("#roleCre :selected").text();
+        delete user.id;
+        user.firstName = $("#firstnameCre").val();
+        user.lastName = $("#lastnameCre").val();
+        user.username = $("#EmailCre").val();
+        user.password = $("#passwordCre").val();
+        user.role = role;
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: "http://localhost:8080/api/auth/signup",
+            data: JSON.stringify(user)
+        }).done((data) => {
+            console.log(data)
+            user = data
+            let str = `
+                 <tr id="tr_${user.id}">
+                    <td></td>
+                    <td>${user.id}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.username}</td>
+                    <td>${user.role.code}</td>
+                    <td>
+                    <button data-id="${user.id}" id="btn-update" class="btn btn-primary btn-update">Updae</button>
+                     </td>
+                </tr>
+    `;
+            $("#tableListUser tbody").prepend(str)
+            $("#modalCreateUser").modal("hide");
+            App.IziToast.showSuccessAlert("thanh cong!")
+            handleShowModalCreate()
+            handleShowModalUpdate()
+        }).fail(() => {
+            App.IziToast.showErrorAlert("fail!")
+        })
+    })
+
+    $(".btnUpdateUser").on("click", () => {
+        role.id = $("#roleUp").val();
+        role.code = $("#roleUp :selected").text();
+
+        user.id = $("#idUserUp").val();
+        user.firstName = $("#firstnameUp").val();
+        user.lastName = $("#lastnameUp").val();
+        user.username = $("#EmailUp").val();
+        user.role = role;
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "PUT",
+            url: "http://localhost:8080/api/users/update",
+            data: JSON.stringify(user)
+        }).done((data) => {
+            $("#modalUpdateUser").modal("hide");
+            App.IziToast.showSuccessAlert("Chinh sua thanh cong")
+           let currentRow = $("#tr_"+ data.id);
+            let rowUpdate = `
+             <tr id="tr_${data.id}">
+                    <td></td>
+                    <td>${data.id}</td>
+                    <td>${data.firstName}</td>
+                    <td>${data.lastName}</td>
+                    <td>${data.username}</td>
+                    <td>${data.role.code}</td>
+                    <td>
+                    <button data-id="${data.id}" id="btn-update" class="btn btn-primary btn-update">Update</button>
+                     </td>
+                </tr>
+            `
+            currentRow.replaceWith(rowUpdate);
+            handleShowModalCreate()
+            handleShowModalUpdate()
+        }).fail(() => {
+            App.IziToast.showErrorAlert("fail")
+        })
+    })
+
+
+    loadAllUser();
+    handleShowModalCreate()
+    handleShowModalUpdate()
+</script>
+</body>
+</html>
