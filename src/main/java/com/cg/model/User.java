@@ -38,6 +38,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String status;
+
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -52,7 +55,8 @@ public class User extends BaseEntity {
                 .setLastName(lastName)
                 .setUsername(username)
                 .setPassword(password)
-                .setRole(role);
+                .setRole(role)
+                .setStatus(status);
     }
 
 }

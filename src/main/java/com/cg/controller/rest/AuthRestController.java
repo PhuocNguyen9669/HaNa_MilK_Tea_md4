@@ -66,9 +66,10 @@ public class AuthRestController {
         if (!opRole.isPresent()){
             throw new DataInputException("Invalid account role");
         }
-//        userDTO.setId(0L);
+        userDTO.setId(0L);
 
         try {
+            userDTO.setStatus("Active");
               User userDTO1 = userService.save(userDTO.toUser());
 
             return new ResponseEntity<>(userDTO1, HttpStatus.CREATED);
@@ -82,37 +83,49 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Optional <User> userCheck = userService.findByUsername(user.toUser().getUsername());
 
-        String jwt = jwtService.generateTokenLogin(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.getByUsername(user.getUsername());
+        if(userCheck.get().getStatus().equals("Block")){
+            throw new EmailExistsException("Tai khoan da bi block");
+        }
 
-        JwtResponse jwtResponse = new JwtResponse(
-                jwt,
-                currentUser.getId(),
-                userDetails.getUsername(),
-                currentUser.getUsername(),
-                userDetails.getAuthorities()
-        );
-        ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
-                .httpOnly(false)
-                .secure(false)
-                .path("/")
-                .maxAge(60 * 1000)
-                .domain("localhost")
+        if (userCheck.get().getStatus().equals("Active")) {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String jwt = jwtService.generateTokenLogin(authentication);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User currentUser = userService.getByUsername(user.getUsername());
+
+            JwtResponse jwtResponse = new JwtResponse(
+                    jwt,
+                    currentUser.getId(),
+                    userDetails.getUsername(),
+                    currentUser.getUsername(),
+                    userDetails.getAuthorities()
+            );
+            ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
+                    .httpOnly(false)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(60 * 1000)
+                    .domain("localhost")
 //                .domain("ajax-bank-location-jwt.herokuapp.com")
 //                .domain("bank-transaction.azurewebsites.net")
-                .build();
+                    .build();
 
-        System.out.println(jwtResponse);
+            System.out.println(jwtResponse);
 
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, springCookie.toString())
-                .body(jwtResponse);
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, springCookie.toString())
+                    .body(jwtResponse);
+        } else {
+            throw new EmailExistsException("Tai khoan khong ton tai");
+        }
+
+
     }
 
 

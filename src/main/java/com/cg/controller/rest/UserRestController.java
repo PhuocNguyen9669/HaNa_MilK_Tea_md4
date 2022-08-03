@@ -57,9 +57,40 @@ public class UserRestController {
             if(bindingResult.hasErrors()){
             return appUtil.mapErrorToResponse(bindingResult);
         }
-
         User user = userService.saveWithOutPassword(userDTO.toUser());
-        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(user.toUser(), HttpStatus.OK);
     }
+
+    @PutMapping("/update/active")
+    public ResponseEntity<?> doUpdateActive(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+        userDTO.setStatus("Active");
+        User user = userService.saveWithOutPassword(userDTO.toUser());
+        return new ResponseEntity<>(user.toUser(), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/update/block")
+    public ResponseEntity<?> doUpdateBlock(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+        userDTO.setStatus("Block");
+        User user = userService.saveWithOutPassword(userDTO.toUser());
+        return new ResponseEntity<>(user.toUser(), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> doDelete (@PathVariable Long id){
+        Optional<User> userDTO = userService.findByUserIdUser(id);
+        if(userDTO.isPresent()){
+             userService.deleteSoft(userDTO.get().toUser());
+
+             return new ResponseEntity<>("Delete Success",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Delete False", HttpStatus.NO_CONTENT);
+    }
+
 }
 

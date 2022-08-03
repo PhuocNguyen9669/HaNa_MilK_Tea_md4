@@ -29,5 +29,9 @@ public interface IUserService extends IGeneralService<User>, UserDetailsService 
 
     Optional<UserDTO> findByUserId(Long id);
 
+    Optional<User> findByUserIdUser(Long id);
+
     User saveWithOutPassword (User user);
+
+    User deleteSoft(User user);
 }

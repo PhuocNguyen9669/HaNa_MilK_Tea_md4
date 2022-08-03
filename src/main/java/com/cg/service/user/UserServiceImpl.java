@@ -88,8 +88,20 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public Optional<User> findByUserIdUser(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public User saveWithOutPassword(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public User deleteSoft(User user) {
+        user.setDeleted(true);
+        userRepository.save(user);
+        return user;
     }
 
 //    @Override

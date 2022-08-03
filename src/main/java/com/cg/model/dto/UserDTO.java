@@ -42,18 +42,21 @@ public class UserDTO {
     @Valid
     private RoleDTO role;
 
+    private String status;
+
     public UserDTO(Long id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    public UserDTO(Long id, String firstName,String password,String lastName, String username, Role role) {
+    public UserDTO(Long id, String firstName,String password,String lastName, String username, Role role,String status) {
         this.id = id;
         this.firstName = firstName;
         this.password = password;
         this.lastName = lastName;
         this.username = username;
-        this.role = role.toRoleDTO()     ;
+        this.role = role.toRoleDTO();
+        this.status = status;
     }
 
     public User toUser() {
@@ -63,7 +66,8 @@ public class UserDTO {
                 .setLastName(lastName)
                 .setUsername(username)
                 .setPassword(password)
-                .setRole(role.toRole());
+                .setRole(role.toRole())
+                .setStatus(status);
     }
 
 }
