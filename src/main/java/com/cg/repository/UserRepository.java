@@ -25,6 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id,u.firstName,u.password, u.lastName, u.username,u.role, u.status)  FROM User u  WHERE u.deleted = false ")
     List<UserDTO> findAllUserDTOByDeletedIsFalse();
 
-
+//    List<UserDTO> findAllUserDTO();
 }
 

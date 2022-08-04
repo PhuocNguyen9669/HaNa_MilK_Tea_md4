@@ -18,13 +18,13 @@
         "url" : "http://localhost:8080/api/auth/login",
         "data" : JSON.stringify(user)
     })
-        .done((data) => {
-            App.IziToast.showSuccessAlert("Login success");
-            window.location.href = "/home";
-        })
-        .fail(() => {
-            App.IziToast.showErrorAlert("Login Error")
-        })
+    .done((data) => {
+        App.IziToast.showSuccessAlert("Login success");
+        window.location.href = "/home";
+    })
+    .fail((jqXHR) => {
+        App.IziToast.showErrorAlert(jqXHR.responseJSON.message);
+    })
 })
     let btnSignUp = $('#btnSignUp')
     btnSignUp.on('click', () => {

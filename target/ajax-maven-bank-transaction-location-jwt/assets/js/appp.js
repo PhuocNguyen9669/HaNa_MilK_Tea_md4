@@ -58,6 +58,17 @@ class User {
     }
 }
 
+class Product {
+    constructor(id, productName, quantity, price, description, image) {
+        this.id = id;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+    }
+}
+
 
 
 

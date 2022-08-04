@@ -47,7 +47,7 @@
                 </div>
                 <div class="row">
                     <div class="col-8 float-lg-left">
-                        Danh sach nguoi dung
+                        List user
                     </div>
                     <div class="col-4 float-lg-right">
                         <button id="btn-created" class="btn btn-primary btn-created">Create</button>
@@ -150,27 +150,29 @@
                     <td>${user.role.code}</td>
                     <td>${user.status}</td>
                     <td>
-                    <button data-id="${user.id}" id="btn-update" class="btn btn-primary btn-update">Update</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-update">Update</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-delete" class="btn btn-primary btn-delete">Delete</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-delete">Delete</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-active" class="btn btn-primary btn-active">Active</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-active">Active</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-block" class="btn btn-primary btn-block">Block</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-block">Block</button>
                      </td>
                 </tr>
     `
 
                 $("#tableListUser tbody").append(str)
-                handleShowModalCreate()
-                handleShowModalUpdate()
-                handlerShowConfirmDelete()
-                doBlock()
-                doActive()
+
             })
+
+            handleShowModalCreate()
+            handleShowModalUpdate()
+            handlerShowConfirmDelete()
+            doBlock()
+            doActive()
 
         }).fail(() => {
 
@@ -238,16 +240,16 @@
                     <td>${user.role.code}</td>
                     <td>${user.status}</td>
                     <td>
-                    <button data-id="${user.id}" id="btn-update" class="btn btn-primary btn-update">Updae</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-update">Updae</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-delete" class="btn btn-primary btn-delete">Delete</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-delete">Delete</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-active" class="btn btn-primary btn-active">Active</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-active">Active</button>
                     </td>
                     <td>
-                    <button data-id="${user.id}" id="btn-block" class="btn btn-primary btn-block">Block</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-block">Block</button>
                      </td>
                 </tr>
     `;
@@ -297,16 +299,16 @@
                     <td>${data.role.code}</td>
                     <td>${data.status}</td>
                     <td>
-                    <button data-id="${data.id}" id="btn-update" class="btn btn-primary btn-update">Update</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-update">Update</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-delete" class="btn btn-primary btn-delete">Delete</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-delete">Delete</button>
                     </td>
                     <td>
-                     <button data-id="${data.id}" id="btn-active" class="btn btn-primary btn-active">Active</button>
+                     <button data-id="${data.id}" class="btn btn-primary btn-active">Active</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-block" class="btn btn-primary btn-block">Block</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-block">Block</button>
                      </td>
                 </tr>
             `
@@ -358,7 +360,7 @@
         })
     }
 
-    function doBlock() {
+    function doActive() {
         $(".btn-active").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
@@ -371,7 +373,7 @@
                     url: "http://localhost:8080/api/users/update/active",
                     data: JSON.stringify(user)
                 }).done((data) => {
-                    App.SweetAlert.showSuccessAlert("Chinh sua  trang thai thanh cong")
+                    App.SweetAlert.showSuccessAlert("Status changed to active")
                     let currentRow = $("#tr_" + data.id);
                     let rowUpdate = `
                 <tr id="tr_${data.id}">
@@ -383,16 +385,16 @@
                     <td>${data.role.code}</td>
                     <td>${data.status}</td>
                     <td>
-                    <button data-id="${data.id}" id="btn-update" class="btn btn-primary btn-update">Update</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-update">Update</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-delete" class="btn btn-primary btn-delete">Delete</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-delete">Delete</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-active" class="btn btn-primary btn-active">Active</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-active">Active</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-block" class="btn btn-primary btn-block">Block</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-block">Block</button>
                      </td>
                 </tr>
             `
@@ -400,17 +402,18 @@
                     handleShowModalCreate()
                     handleShowModalUpdate()
                     handlerShowConfirmDelete()
+                    unBindAll();
                     doBlock()
                     doActive()
                 }).fail((jqXHR) => {
                     console.log(jqXHR);
-                    App.IziToast.showErrorAlert("fail")
+                    App.IziToast.showErrorAlert("Status change failed")
                 })
             })
         })
     }
 
-    function doActive() {
+    function doBlock() {
         $(".btn-block").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
@@ -423,7 +426,7 @@
                     url: "http://localhost:8080/api/users/update/block",
                     data: JSON.stringify(user)
                 }).done((data) => {
-                    App.SweetAlert.showSuccessAlert("Chinh sua trang thai thanh cong")
+                    App.SweetAlert.showSuccessAlert("Status changed to block")
                     let currentRow = $("#tr_" + data.id);
                     let rowUpdate = `
              <tr id="tr_${data.id}">
@@ -435,31 +438,38 @@
                     <td>${data.role.code}</td>
                     <td>${data.status}</td>
                     <td>
-                    <button data-id="${data.id}" id="btn-update" class="btn btn-primary btn-update">Update</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-update">Update</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-delete" class="btn btn-primary btn-delete">Delete</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-delete">Delete</button>
                     </td>
                     <td>
-                    <button data-id="${data.id}" id="btn-active" class="btn btn-primary btn-active">Active</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-active">Active</button>
                    </td>
                    <td>
-                    <button data-id="${data.id}" id="btn-block" class="btn btn-primary btn-block">Block</button>
+                    <button data-id="${data.id}" class="btn btn-primary btn-block">Block</button>
                     </td>
                 </tr>
             `
                     currentRow.replaceWith(rowUpdate);
+
                     handleShowModalCreate()
                     handleShowModalUpdate()
                     handlerShowConfirmDelete()
+                    unBindAll();
                     doBlock()
                     doActive()
                 }).fail((jqXHR) => {
                     console.log(jqXHR);
-                    App.IziToast.showErrorAlert("fail")
+                    App.IziToast.showErrorAlert("Status change failed")
                 })
             })
         })
+    }
+
+    function unBindAll() {
+        $(".btn-active").off();
+        $(".btn-block").off();
     }
 
     loadAllUser();

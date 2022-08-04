@@ -52,10 +52,10 @@ public class UserServiceImpl implements IUserService {
         return userRepository.findUserDTOByUsername(username);
     }
 
-    @Override
-    public List<UserDTO> findAllUserDTO() {
-        return null;
-    }
+//    @Override
+//    public List<UserDTO> findAllUserDTO() {
+//        return userRepository.findAllUserDTO();
+//    }
 
     @Override
     public List<UserDTO> findAllByIdNot(Long id) {

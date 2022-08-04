@@ -11,11 +11,9 @@ import java.util.Optional;
 public interface IUserService extends IGeneralService<User>, UserDetailsService {
     User getByUsername(String username);
 
-    Optional<User> findByUsername(String username);
-
     Optional<UserDTO> findUserDTOByUsername(String username);
 
-    List<UserDTO> findAllUserDTO();
+//    List<UserDTO> findAllUserDTO();
 
     List<UserDTO> findAllByIdNot(Long id);
 
@@ -34,4 +32,6 @@ public interface IUserService extends IGeneralService<User>, UserDetailsService 
     User saveWithOutPassword (User user);
 
     User deleteSoft(User user);
+
+    Optional<User> findByUsername(String username);
 }

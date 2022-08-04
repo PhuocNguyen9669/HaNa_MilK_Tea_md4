@@ -1,7 +1,6 @@
 package com.cg.controller.rest;
 
-import com.cg.exception.DataInputException;
-import com.cg.exception.ResourceNotFoundException;
+
 import com.cg.model.User;
 import com.cg.model.dto.UserDTO;
 import com.cg.service.jwt.JwtService;
@@ -58,7 +57,7 @@ public class UserRestController {
             return appUtil.mapErrorToResponse(bindingResult);
         }
         User user = userService.saveWithOutPassword(userDTO.toUser());
-        return new ResponseEntity<>(user.toUser(), HttpStatus.OK);
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.OK);
     }
 
     @PutMapping("/update/active")
@@ -68,7 +67,7 @@ public class UserRestController {
         }
         userDTO.setStatus("Active");
         User user = userService.saveWithOutPassword(userDTO.toUser());
-        return new ResponseEntity<>(user.toUser(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/update/block")
@@ -76,16 +75,20 @@ public class UserRestController {
         if(bindingResult.hasErrors()){
             return appUtil.mapErrorToResponse(bindingResult);
         }
+
         userDTO.setStatus("Block");
         User user = userService.saveWithOutPassword(userDTO.toUser());
-        return new ResponseEntity<>(user.toUser(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+
     }
+
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> doDelete (@PathVariable Long id){
         Optional<User> userDTO = userService.findByUserIdUser(id);
         if(userDTO.isPresent()){
-             userService.deleteSoft(userDTO.get().toUser());
+             userService.deleteSoft(userDTO.get().toUserDTO().toUser());
 
              return new ResponseEntity<>("Delete Success",HttpStatus.OK);
         }

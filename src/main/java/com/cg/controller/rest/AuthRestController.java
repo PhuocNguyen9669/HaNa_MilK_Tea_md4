@@ -83,10 +83,10 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-        Optional <User> userCheck = userService.findByUsername(user.toUser().getUsername());
+        Optional <User> userCheck = userService.findByUsername(user.getUsername());
 
         if(userCheck.get().getStatus().equals("Block")){
-            throw new EmailExistsException("Tai khoan da bi block");
+            throw new EmailExistsException("Account has been locked");
         }
 
         if (userCheck.get().getStatus().equals("Active")) {

@@ -48,14 +48,14 @@ public class User extends BaseEntity {
 
 
 
-    public User toUser() {
-        return new User()
+    public UserDTO toUserDTO() {
+        return new UserDTO()
                 .setId(id)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setUsername(username)
                 .setPassword(password)
-                .setRole(role)
+                .setRole(role.toRoleDTO())
                 .setStatus(status);
     }
 

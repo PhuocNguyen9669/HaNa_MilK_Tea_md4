@@ -30,3 +30,7 @@
 .action {
     padding-right: 0;
 }
+
+.table thead th {
+    text-align: center;
+}
