@@ -305,7 +305,7 @@
         }).done((data) => {
             console.log(data);
             $("#modalUpdateUser").modal("hide");
-            App.SweetAlert.showSuccessAlert("Chinh sua thanh cong")
+            App.SweetAlert.showSuccessAlert("Edit user successful")
             let currentRow = $("#tr_" + data.id);
             let rowUpdate = `
              <tr id="tr_${data.id}">
@@ -338,24 +338,44 @@
             doActive()
         })
             .fail((jqXHR) => {
+                console.log(jqXHR);
                 $('#modalUpdateUser .modal-alert-danger').html('').removeClass('hide').addClass('show');
 
-                if (jqXHR.responseJSON.message) {
-                    let msg = jqXHR.responseJSON.message;
+                if (jqXHR.status === 401) {
+                    let msg = "Please login !!";
 
                     let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
 
                     $('#modalUpdateUser .modal-alert-danger').append(str);
                 }
-                else
-                if (jqXHR.responseJSON) {
-                    $.each(jqXHR.responseJSON, (key, item) => {
-                        let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
-                        $("#" + key).addClass("error");
+                else {
+                    if (jqXHR.status === 403) {
+                        let msg = "You are not authorized to perform this function !!";
+
+                        let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
 
                         $('#modalUpdateUser .modal-alert-danger').append(str);
-                    })
+                    }
+                    else {
+                        if (jqXHR.responseJSON.message) {
+                            let msg = jqXHR.responseJSON.message;
+
+                            let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
+
+                            $('#modalUpdateUser .modal-alert-danger').append(str);
+                        }
+                        else if (jqXHR.responseJSON) {
+                            $.each(jqXHR.responseJSON, (key, item) => {
+                                let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
+                                $("#" + key).addClass("error");
+
+                                $('#modalUpdateUser .modal-alert-danger').append(str);
+                            })
+                        }
+                    }
                 }
+
+
             })
     })
 

@@ -24,11 +24,11 @@ public class UserDTO {
 
 
     @NotBlank(message = "The first name is required")
-    @Pattern(regexp = "^[A-Z][-a-zA-Z]+$", message = "First name contains only letters")
+    @Pattern(regexp = "\\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+", message = "First name contains only letters")
     private String firstName;
 
     @NotBlank(message = "The last name is required")
-    @Pattern(regexp = "^[A-Z][-a-zA-Z]+$", message = "Last name contains only letters")
+    @Pattern(regexp = "\\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+", message = "Last name contains only letters")
     private String lastName;
 
 
@@ -44,7 +44,6 @@ public class UserDTO {
     @Valid
     private RoleDTO role;
 
-    @NotBlank(message = "The status is required")
     private String status;
 
     public UserDTO(Long id, String username) {
