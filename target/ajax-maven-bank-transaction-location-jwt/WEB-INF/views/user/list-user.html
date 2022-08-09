@@ -261,6 +261,11 @@
             handlerShowConfirmDelete()
             doBlock()
             doActive()
+
+            $("#firstnameCre").val("");
+             $("#lastnameCre").val("");
+             $("#EmailCre").val("");
+            $("#passwordCre").val("");
         })
             .fail((jqXHR) => {
                 $('#modalCreateUser .modal-alert-danger').html('').removeClass('hide').addClass('show');

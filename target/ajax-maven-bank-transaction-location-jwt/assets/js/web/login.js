@@ -63,6 +63,12 @@
                 // window.location.href = "/login";
             })
             .fail((jqXHR) => {
-                App.IziToast.showErrorAlert("Sign up error");
+                console.log(jqXHR);
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item)=> {
+                        App.IziToast.showErrorAlert(item);
+                    })
+                }
+
             })
     })
