@@ -51,7 +51,7 @@ public class AuthRestController {
     private AppUtil appUtil;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> signup(@Validated @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return appUtil.mapErrorToResponse(bindingResult);
         }
@@ -84,6 +84,10 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         Optional <User> userCheck = userService.findByUsername(user.getUsername());
+
+        if (!userCheck.isPresent()) {
+            throw new EmailExistsException("Account does not exist");
+        }
 
         if(userCheck.get().getStatus().equals("Block")){
             throw new EmailExistsException("Account has been locked");
@@ -122,7 +126,7 @@ public class AuthRestController {
                     .header(HttpHeaders.SET_COOKIE, springCookie.toString())
                     .body(jwtResponse);
         } else {
-            throw new EmailExistsException("Tai khoan khong ton tai");
+            throw new EmailExistsException("Account does not exist");
         }
 
 

@@ -49,4 +49,11 @@ public class HomeController {
 //        modelAndView.addObject("user", username);
         return modelAndView;
     }
+
+    @GetMapping("/products")
+    public ModelAndView showProductPage(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/product/list-product");
+        return modelAndView;
+    }
 }

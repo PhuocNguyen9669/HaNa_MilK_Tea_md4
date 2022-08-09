@@ -7,11 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 
 @Getter
@@ -24,24 +23,28 @@ public class UserDTO {
     private Long id;
 
 
+    @NotBlank(message = "The first name is required")
+    @Pattern(regexp = "^[A-Z][-a-zA-Z]+$", message = "First name contains only letters")
     private String firstName;
 
-
+    @NotBlank(message = "The last name is required")
+    @Pattern(regexp = "^[A-Z][-a-zA-Z]+$", message = "Last name contains only letters")
     private String lastName;
 
 
-//    @NotBlank(message = "The email is required")
+    @NotBlank(message = "The email is required")
     @Email(message = "The email address is invalid")
-    @Size(max = 50, message = "The length of email must be between 5 and 50 characters")
     private String username;
 
     @NotBlank(message = "The password is required")
-    @Size(max = 30, message = "Maximum password length 30 characters")
+//    @Size(max = 30, message = "Maximum password length 30 characters")
     private String password;
+
 
     @Valid
     private RoleDTO role;
 
+    @NotBlank(message = "The status is required")
     private String status;
 
     public UserDTO(Long id, String username) {

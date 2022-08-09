@@ -61,11 +61,11 @@
                             <tr>
                                 <th></th>
                                 <th>#</th>
-                                <th>first name</th>
-                                <th>last name</th>
-                                <th>username</th>
-                                <th>ROLE</th>
-                                <th>status</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
                                 <th colspan="4">ACTION</th>
                             </tr>
                             </thead>
@@ -240,7 +240,7 @@
                     <td>${user.role.code}</td>
                     <td>${user.status}</td>
                     <td>
-                    <button data-id="${user.id}" class="btn btn-primary btn-update">Updae</button>
+                    <button data-id="${user.id}" class="btn btn-primary btn-update">Update</button>
                     </td>
                     <td>
                     <button data-id="${user.id}" class="btn btn-primary btn-delete">Delete</button>
@@ -255,15 +255,33 @@
     `;
             $("#tableListUser tbody").prepend(str)
             $("#modalCreateUser").modal("hide");
-            App.IziToast.showSuccessAlert("thanh cong!")
+            App.IziToast.showSuccessAlert("Create new user successful!")
             handleShowModalCreate()
             handleShowModalUpdate()
             handlerShowConfirmDelete()
             doBlock()
             doActive()
-        }).fail(() => {
-            App.IziToast.showErrorAlert("fail!")
         })
+            .fail((jqXHR) => {
+                $('#modalCreateUser .modal-alert-danger').html('').removeClass('hide').addClass('show');
+
+                if (jqXHR.responseJSON.message) {
+                    let msg = jqXHR.responseJSON.message;
+
+                    let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
+
+                    $('#modalCreateUser .modal-alert-danger').append(str);
+                }
+                else
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
+                        $("#" + key).addClass("error");
+
+                        $('#modalCreateUser .modal-alert-danger').append(str);
+                    })
+                }
+            })
     })
 
     $(".btnUpdateUser").on("click", () => {
@@ -318,10 +336,27 @@
             handlerShowConfirmDelete()
             doBlock()
             doActive()
-        }).fail((jqXHR) => {
-            console.log(jqXHR);
-            App.IziToast.showErrorAlert("fail")
         })
+            .fail((jqXHR) => {
+                $('#modalUpdateUser .modal-alert-danger').html('').removeClass('hide').addClass('show');
+
+                if (jqXHR.responseJSON.message) {
+                    let msg = jqXHR.responseJSON.message;
+
+                    let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
+
+                    $('#modalUpdateUser .modal-alert-danger').append(str);
+                }
+                else
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
+                        $("#" + key).addClass("error");
+
+                        $('#modalUpdateUser .modal-alert-danger').append(str);
+                    })
+                }
+            })
     })
 
     function handlerShowConfirmDelete() {

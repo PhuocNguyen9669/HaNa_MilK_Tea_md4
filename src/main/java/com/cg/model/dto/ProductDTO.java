@@ -10,9 +10,8 @@ import lombok.experimental.Accessors;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -25,23 +24,28 @@ public class ProductDTO implements Validator {
 
     private Long id;
 
-    @NotEmpty(message = "Product name cannot be empty!!")
+    @NotBlank(message = "Product name is required!!")
+    @Pattern(regexp = "\\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+", message = "Product name contains only letters")
     private String productName;
 
+    @Valid
     private CategoryDTO category;
 
+    @NotNull(message = "Product quantity not null!!")
     @Min(value = 1, message = "Minimum quantity of one product")
     @Max(value = 999, message = "Quantity cannot exceed 999 products")
     private BigDecimal quantity;
 
+
+    @NotNull(message = "Product name not null!!")
     @Min(value = 10000, message = "Minimum amount 10,000VND")
     @Max(value = 999999999, message = "Amount does not exceed 999,999,999VND")
     private BigDecimal price;
 
-    @NotEmpty(message = "Product details cannot be left blank!!")
+    @NotBlank(message = "Product description is required!!")
     private String description;
 
-    @NotEmpty(message = "Photos cannot be blank")
+    @NotBlank(message = "Product image is required!!")
     private String image;
 
     private Date createdAt;

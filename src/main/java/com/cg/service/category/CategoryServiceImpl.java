@@ -4,10 +4,12 @@ import com.cg.model.Category;
 import com.cg.model.dto.CategoryDTO;
 import com.cg.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class CategoryServiceImpl implements ICategoryService{
 
     @Autowired

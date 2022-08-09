@@ -22,7 +22,7 @@
         App.IziToast.showSuccessAlert("Login success");
         window.location.href = "/home";
     })
-    .fail((jqXHR) => {
+        .fail((jqXHR) => {
         App.IziToast.showErrorAlert(jqXHR.responseJSON.message);
     })
 })

@@ -42,7 +42,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public ProductDTO topPoductDTO() {
+    public ProductDTO topProductDTO() {
         return new ProductDTO()
                 .setId(id)
                 .setProductName(productName)

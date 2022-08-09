@@ -1,24 +1,114 @@
-//package com.cg.controller.rest;
-//
-//import com.cg.service.category.ICategoryService;
-//import com.cg.service.product.IProductService;
-//import com.cg.util.AppUtil;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@Controller
-//@RequestMapping("/api/products")
-//public class ProductRestController {
-//
-//    @Autowired
-//    private AppUtil appUtil;
-//
-//    @Autowired
-//    private IProductService productService;
-//
-//    @Autowired
-//    private ICategoryService categoryService;
-//}
+package com.cg.controller.rest;
+
+import com.cg.model.Product;
+import com.cg.model.dto.CategoryDTO;
+import com.cg.model.dto.ProductDTO;
+import com.cg.service.category.ICategoryService;
+import com.cg.service.product.IProductService;
+import com.cg.util.AppUtil;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/api/products")
+public class ProductRestController {
+
+    @Autowired
+    private AppUtil appUtil;
+
+    @Autowired
+    private IProductService productService;
+
+    @Autowired
+    private ICategoryService categoryService;
+
+    @GetMapping
+    public ResponseEntity<?> showListProduct() {
+        List<ProductDTO> productDTOS = productService.findAllProductDTO();
+        return new ResponseEntity<>(productDTOS, HttpStatus.OK);
+    }
+    @GetMapping("/category")
+    public ResponseEntity<?> getCategory() {
+
+        List<CategoryDTO> categoryDTOS = categoryService.findAllCategoryDTO();
+
+        return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> doCreateProduct (@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
+
+        new ProductDTO().validate(productDTO, bindingResult);
+
+        try {
+
+            if (bindingResult.hasErrors()) {
+                return appUtil.mapErrorToResponse(bindingResult);
+            }
+
+            Product newProduct = productService.save(productDTO.toProduct());
+
+            return new ResponseEntity<>(newProduct.topProductDTO(), HttpStatus.CREATED);
+
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+
+            return new ResponseEntity<>("Failed to add product", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+        Optional<ProductDTO> productDTO = productService.findByProductDTOId(id);
+
+        if (productDTO.isPresent()) {
+            return new ResponseEntity<>(productDTO.get(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> doUpdate (@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
+
+        new ProductDTO().validate(productDTO, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+
+        Product updateProduct = productService.save(productDTO.toProduct());
+
+        return new ResponseEntity<>(updateProduct.topProductDTO(), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<?> doDelete(@PathVariable Long productId) {
+        Optional<Product> product = productService.findById(productId);
+        if (product.isPresent()) {
+
+            productService.softDelete(product.get());
+            return new ResponseEntity<>("Delete product success", HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Delete product error", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+}
+

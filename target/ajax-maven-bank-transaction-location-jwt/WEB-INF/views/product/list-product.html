@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Upvex - Responsive Admin Dashboard Template</title>
+    <th:block th:replace="/layout/header::header"/>
+
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+
+    <!-- Topbar Start -->
+    <th:block th:replace="/layout/navbar::navbar"/>
+    <!-- end Topbar -->
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <th:block th:replace="/layout/left-size-menu::left-size-menu"/>
+
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Upvex</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8 float-lg-left">
+                        List Product
+                    </div>
+                    <div class="col-4 float-lg-right">
+                        <button id="btn-created" class="btn btn-primary btn-created">Create product</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table class=" table table-hover" id="tableListProduct">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Description</th>
+                                <th>Image</th>
+                                <th>Category</th>
+                                <th colspan="2">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <!-- end row -->
+
+                <!-- end row -->
+
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        2019 &copy; Upvex theme by <a href="">Coderthemes</a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-md-right footer-links d-none d-sm-block">
+                            <a href="javascript:void(0);">About Us</a>
+                            <a href="javascript:void(0);">Help</a>
+                            <a href="javascript:void(0);">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end Footer -->
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+
+
+</div>
+<!-- END wrapper -->
+
+<!-- Right Sidebar -->
+<th:block th:replace="/layout/right-bar::right-bar"/>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+<th:block th:replace="/layout/script/script::temp_script"/>
+<th:block th:replace="/product/modal-create-product::modal-create-product"/>
+<th:block th:replace="/product/modal-update-product :: modal-update-product"/>
+
+
+
+<script>
+
+    let product = new Product();
+
+    let category = new Category();
+
+    function loadAllProduct() {
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "GET",
+            "url": "http://localhost:8080/api/products"
+        })
+            .done((data) => {
+                $.each(data, (i, item) => {
+                    product = item;
+                    let str = `
+                    <tr id="tr_${product.id}">
+                        <td></td>
+                        <td>${product.id}</td>
+                        <td>${product.productName}</td>
+                        <td>${product.quantity}</td>
+                        <td>${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(product.price)}
+                        </td>
+                        <td>${product.description}</td>
+                        <td><img src="${product.image}" style="border-radius: 10px; width: 50px"></td>
+                        <td>${product.category.name}</td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-update">Update</button>
+                        </td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-delete">Delete</button>
+                        </td>
+               `;
+                    $('#tableListProduct tbody').prepend(str);
+                    handleCreateShowProduct();
+                    handleUpdateShowProduct();
+                    handleDeleteShowProduct()
+                })
+            })
+            .fail(() => {
+                App.SweetAlert.showErrorAlert("List product error")
+            })
+    }
+
+    function getProductById(productId) {
+        return $.ajax({
+            "headers" : {
+                "accept" : "application/json",
+                "content-type" : "application/json"
+            },
+            "type" : "GET",
+            "url" : "http://localhost:8080/api/products/product/" + productId
+        })
+        .done((data) => {
+            product = data;
+            category = product.category;
+            console.log(product);
+        })
+        .fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("Product id search failed!!!")
+        })
+    }
+
+    function handleCreateShowProduct() {
+        $('.btn-created').on('click', () => {
+            $('#modalCreateProduct').modal('show');
+        })
+    }
+
+    function handleUpdateShowProduct () {
+        $('.btn-update').on('click', function () {
+            let id = $(this).data("id");
+            getProductById(id).then(() => {
+                $('#productNameUp').val(product.productName);
+                $('#quantityUp').val(product.quantity);
+                $('#priceUp').val(product.price);
+                $('#descriptionUp').val(product.description);
+                $('#imageUp').val(product.image);
+                $('#categoryUp').val(category.id);
+                $('#modalUpdateProduct').modal('show');
+               $('#idProductUp').val(product.id);
+
+            })
+        })
+    }
+
+    function handleDeleteShowProduct() {
+        $('.btn-delete').on('click', function () {
+            let productId = $(this).data("id");
+            Swal.fire ({
+                title : "Are you sure to deactive the selected product?",
+                icon : "warning",
+                showCancleButton : true,
+                confirmButtonColor : "#3085d6",
+                cancelButton : "#d33",
+                confirmButtonText: "Yes, deactive it!!",
+
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    doDelete(productId);
+                }
+            })
+        })
+    }
+
+    $('#btnCreate').on('click', () => {
+        category.id = $('#categoryCre').val();
+        category.name = $('#categoryCre :selected').text();
+        delete product.id;
+        product.productName = $('#productName').val();
+        product.quantity = $('#quantity').val();
+        product.price = $('#price').val();
+        product.description = $('#description').val();
+        product.image = $('#image').val();
+        product.category = category;
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/products/create",
+            "data": JSON.stringify(product)
+        })
+            .done((data) => {
+                product = data;
+                console.log(data)
+                $('#modalCreateProduct').modal('hide');
+                let str = `
+                    <tr id="tr_${product.id}">
+                        <td></td>
+                        <td>${product.id}</td>
+                        <td>${product.productName}</td>
+                        <td>${product.quantity}</td>
+                        <td>${new Intl.NumberFormat('vi-VN', {
+                                  style: 'currency',
+                                  currency: 'VND'
+                             }).format(product.price)}
+                        </td>
+                        <td>${product.description}</td>
+                        <td><img src="${product.image}" style="border-radius: 10px; width: 50px"></td>
+                        <td>${product.category.name}</td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-update">Update</button>
+                        </td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-delete">Delete</button>
+                        </td>
+                    </tr>
+               `;
+                $('#tableListProduct tbody').prepend(str);
+                App.IziToast.showSuccessAlert('Create new product successful !!');
+                handleCreateShowProduct();
+                handleUpdateShowProduct();
+                handleDeleteShowProduct();
+                $('#productName').val("");
+                // $('#productName').val("");
+                $('#quantity').val("");
+                $('#price').val("");
+                $('#description').val("");
+                $('#image').val("");
+                $('#categoryCre').val("");
+            })
+            .fail((jqXHR) => {
+                $('#modalCreateProduct .modal-alert-danger').html('').removeClass('hide').addClass('show');
+
+                if (jqXHR.responseJSON.message) {
+                    let msg = jqXHR.responseJSON.message;
+
+                    let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
+
+                    $('#modalCreateProduct .modal-alert-danger').append(str);
+                }
+                else
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
+                        $("#" + key).addClass("error");
+
+                        $('#modalCreateProduct .modal-alert-danger').append(str);
+                    })
+                }
+            })
+    })
+
+    $('#btnUpdate').on('click', () => {
+        category.id = $('#categoryUp').val();
+        category.name = $('#categoryUp :selected').text();
+
+        // product.id = productId;
+        product.id = $('#idProductUp').val();
+        product.productName = $('#productNameUp').val();
+        product.quantity = $('#quantityUp').val();
+        product.price = $('#priceUp').val();
+        product.description = $('#descriptionUp').val();
+        product.image = $('#imageUp').val();
+        product.category = category;
+
+        $.ajax({
+            "headers" : {
+                "accept" : "application/json",
+                "content-type" : "application/json"
+            },
+            "type" : "PUT",
+            "url" : "http://localhost:8080/api/products/update",
+            "data" : JSON.stringify(product)
+        })
+        .done((data) => {
+            product = data;
+            console.log(data);
+            let currentRow = $('#tr_' + product.id);
+            let updateRow = `
+                   <tr id="tr_${product.id}">
+                        <td></td>
+                        <td>${product.id}</td>
+                        <td>${product.productName}</td>
+                        <td>${product.quantity}</td>
+                        <td>${new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                             }).format(product.price)}
+                        </td>
+                        <td>${product.description}</td>
+                        <td><img src="${product.image}" style="border-radius: 10px; width: 50px"></td>
+                        <td>${product.category.name}</td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-update">Update</button>
+                        </td>
+                        <td>
+                             <button data-id="${product.id}" class="btn btn-primary btn-delete">Delete</button>
+                        </td>
+                    </tr>
+            `;
+            currentRow.replaceWith(updateRow);
+
+            $('#modalUpdateProduct').modal('hide');
+
+            App.SweetAlert.showSuccessAlert("Edit product successfully!!!")
+
+            $('#tableListProduct tbody tr').off();
+
+            handleCreateShowProduct();
+            handleUpdateShowProduct();
+            handleDeleteShowProduct()
+
+            $('#idProductUp').val("");
+            $('#productNameUp').val("");
+            $('#quantityUp').val("");
+            $('#priceUp').val("");
+            $('#descriptionUp').val("");
+            $('#imageUp').val("");
+            $('#categoryUp').val("");
+
+        })
+            .fail((jqXHR) => {
+                $('#modalUpdateProduct .modal-alert-danger').html('').removeClass('hide').addClass('show');
+
+                if (jqXHR.responseJSON.message) {
+                    let msg = jqXHR.responseJSON.message;
+
+                    let str = `<label id="message-error" class="error" for="message">${msg}</label>`;
+
+                    $('#modalUpdateProduct .modal-alert-danger').append(str);
+                }
+                else
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<label id="${key}-error" class="error" for="${key}">${item}</label>`;
+                        $("#" + key).addClass("error");
+
+                        $('#modalUpdateProduct .modal-alert-danger').append(str);
+                    })
+                }
+            })
+    })
+
+    function doDelete(productId) {
+        $.ajax({
+            "type" : "DELETE",
+            "url" : "http://localhost:8080/api/products/" + productId
+        })
+        .done(() => {
+            $('#tr_' + productId).remove();
+
+            App.SweetAlert.showSuccessAlert("Product has been deleted!!");
+        })
+        .fail(() => {
+            App.SweetAlert.showErrorAlert("Product information invalid!!");
+        })
+    }
+
+    handleCreateShowProduct();
+    handleUpdateShowProduct();
+    handleDeleteShowProduct();
+    loadAllProduct();
+</script>
+</body>
+</html>

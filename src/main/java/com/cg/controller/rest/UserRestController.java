@@ -52,7 +52,7 @@ public class UserRestController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> doUpdate(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+    public ResponseEntity<?> doUpdate(@Validated @RequestBody UserDTO userDTO,BindingResult bindingResult){
             if(bindingResult.hasErrors()){
             return appUtil.mapErrorToResponse(bindingResult);
         }

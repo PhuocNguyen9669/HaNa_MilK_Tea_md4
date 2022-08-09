@@ -4,6 +4,7 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/homepage-dashboard/home.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/homepage-dashboard" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/product/modal-create-product.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/product" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/user/list-user.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/user" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/user/modal-create-user.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/user" />
       </map>
