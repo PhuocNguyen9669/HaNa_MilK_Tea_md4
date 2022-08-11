@@ -12,4 +12,5 @@ public interface IProductService extends IGeneralService<Product> {
 
     Optional<ProductDTO> findByProductDTOId(Long id);
 
+    List<ProductDTO> findProductByValue(String query);
 }

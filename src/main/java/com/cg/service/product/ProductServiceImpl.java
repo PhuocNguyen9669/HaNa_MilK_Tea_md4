@@ -62,5 +62,10 @@ public class ProductServiceImpl implements IProductService {
         return productRepository.findByProductDTOId(id);
     }
 
+    @Override
+    public List<ProductDTO> findProductByValue(String query) {
+        return productRepository.findProductValue(query);
+    }
+
 
 }

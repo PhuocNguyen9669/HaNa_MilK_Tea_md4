@@ -412,11 +412,17 @@
 
                 $("#tr_" + customerId).remove();
 
-                App.SweetAlert.showSuccessAlert("Customer has been deleted. ")
+                App.SweetAlert.showSuccessAlert("User has been deleted. ")
 
 
-            }).fail(() => {
-            App.SweetAlert.showErrorAlert("Customer information invalid");
+            }).fail((jqXHR) => {
+            if (jqXHR.status === 403) {
+                let msg = "You are not authorized to perform this function !!";
+
+                App.SweetAlert.showErrorAlert(msg)
+            } else {
+                App.SweetAlert.showErrorAlert("User information invalid");
+            }
         })
     }
 
@@ -467,7 +473,15 @@
                     doActive()
                 }).fail((jqXHR) => {
                     console.log(jqXHR);
-                    App.IziToast.showErrorAlert("Status change failed")
+                    if (jqXHR.status === 403) {
+                        let msg = "You are not authorized to perform this function !!";
+                        App.SweetAlert.showErrorAlert(msg)
+
+                    }
+                    else {
+                        App.IziToast.showErrorAlert("Status change failed");
+
+                    }
                 })
             })
         })
@@ -521,7 +535,15 @@
                     doActive()
                 }).fail((jqXHR) => {
                     console.log(jqXHR);
-                    App.IziToast.showErrorAlert("Status change failed")
+                    if (jqXHR.status === 403) {
+                        let msg = "You are not authorized to perform this function !!";
+                        App.SweetAlert.showErrorAlert(msg)
+
+                    }
+                    else {
+                        App.IziToast.showErrorAlert("Status change failed");
+
+                    }
                 })
             })
         })

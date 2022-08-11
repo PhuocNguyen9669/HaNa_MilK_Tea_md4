@@ -64,6 +64,15 @@ public class ProductDTO implements Validator {
         this.updatedAt = updatedAt;
     }
 
+    public ProductDTO(Long id, String productName, Category category, BigDecimal quantity, BigDecimal price, String description, String image) {
+        this.id = id;
+        this.productName = productName;
+        this.category = category.categoryDTO();
+        this.quantity = quantity;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+    }
 
     public Product toProduct() {
         return new Product()

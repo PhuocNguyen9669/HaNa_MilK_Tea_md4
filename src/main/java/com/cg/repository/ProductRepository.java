@@ -28,4 +28,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT NEW com.cg.model.dto.ProductDTO (p.id, p.productName,p.category, p.quantity, p.price, p.description, p.image, p.createdAt, p.updatedAt)  FROM Product AS p  WHERE p.deleted = false AND p.id = ?1 ")
     Optional<ProductDTO> findByProductDTOId(Long id);
 
+    @Query("SELECT NEW com.cg.model.dto.ProductDTO ( " +
+            "p.id, " +
+            "p.productName, " +
+            "p.category, " +
+            "p.quantity, " +
+            "p.price, " +
+            "p.description, " +
+            "p.image  )" +
+            "FROM Product  p WHERE  " +
+            " p.description like %?1% " +
+            "or p.productName like %?1% ")
+    List<ProductDTO> findProductValue(String query);
+
     }
